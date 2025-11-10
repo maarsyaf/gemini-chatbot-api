@@ -3,15 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gemini Chatbot</title>
+  <title>Narabot - Powered by Google Gemini AI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="chat-container">
-    <div id="chat-box"></div>
+  <header class="chat-header">
+    <h1>Narabot</h1>
+  </header>
 
-    <form id="chat-form">
-      <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" />
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+
+    <form id="chat-form" class="chat-form">
+      <input
+        id="user-input"
+        type="text"
+        placeholder="Type a message..."
+        autocomplete="off"
+      />
       <button type="submit">Send</button>
     </form>
   </div>

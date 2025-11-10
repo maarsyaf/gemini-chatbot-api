@@ -3,14 +3,45 @@ const input = document.getElementById('user-input');
 const chatBox = document.getElementById('chat-box');
 const API_URL = '/api/chat';
 
+// Menambahkan pesan ke tampilan chat
 function appendMessage(sender, text) {
   const message = document.createElement('div');
   message.classList.add('message', `${sender}-message`);
-  message.textContent = text;
+  message.innerHTML = text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   chatBox.appendChild(message);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Efek animasi titik "AI sedang mengetik"
+function createTypingIndicator() {
+  const typingDiv = document.createElement('div');
+  typingDiv.classList.add('message', 'bot-message', 'typing');
+  typingDiv.innerHTML = `
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  `;
+  chatBox.appendChild(typingDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  return typingDiv;
+}
+
+// Fungsi efek mengetik interaktif
+async function typeMessage(text) {
+  const message = document.createElement('div');
+  message.classList.add('message', 'bot-message');
+  chatBox.appendChild(message);
+
+  for (let i = 0; i < text.length; i++) {
+    message.innerHTML = text.slice(0, i + 1).replace(/\n/g, '<br>');
+    chatBox.scrollTop = chatBox.scrollHeight;
+    await new Promise(r => setTimeout(r, 15)); // kecepatan ngetik
+  }
+}
+
+// Event saat user kirim pesan
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const userMessage = input.value.trim();
@@ -19,28 +50,28 @@ form.addEventListener('submit', async (e) => {
   appendMessage('user', userMessage);
   input.value = '';
 
-  const thinkingMsg = document.createElement('div');
-  thinkingMsg.classList.add('message', 'bot-message');
-  thinkingMsg.textContent = 'Thinking...';
-  chatBox.appendChild(thinkingMsg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  const typingIndicator = createTypingIndicator();
 
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify([{ role: 'user', text: userMessage }]),
+      body: JSON.stringify({
+        messages: [{ role: 'user', text: userMessage }]
+      }),
     });
 
-  if (!response.ok) {
-    thinkingMsg.textContent = 'Server error 😞';
-    return;
-  }
+    const data = await response.json();
+    typingIndicator.remove();
 
-  const data = await response.json();
-  thinkingMsg.textContent = data?.result || 'No response received.';
+    if (data?.result) {
+      await typeMessage(data.result);
+    } else {
+      appendMessage('bot', 'No response received.');
+    }
+
   } catch (err) {
-    console.error(err);
-    thinkingMsg.textContent = 'Failed to reach server.';
+    typingIndicator.remove();
+    appendMessage('bot', '⚠️ Failed to reach server.');
   }
-  })
+});
