@@ -1,4 +1,4 @@
-# Narabot - Simple Chatbot wiht powered by Google Gemini AI
+# Narabot - Simple Chatbot with powered by Google Gemini AI
 
 ## Cara pakai (singkat)
 1. Clone:
