@@ -11,13 +11,15 @@ cd gemini-chatbot-api
 API_KEY=your_gemini_api_key_here
 PORT=3000
 ```
-4. Jalankan:
+3. Jalankan:
 ```bash
+npm install express dotenv @google/genai
+npm install -g nodemon 
 node index.js
 nodemon index.js
 
 ```
-API berjalan di `http://localhost:3000`.
+Trial test API berjalan di `http://localhost:3000`.
 
 ## Tujuan
 Submission Hacktiv8: mengintegrasikan Gemini AI dengan simple chatbot yang responsif.
